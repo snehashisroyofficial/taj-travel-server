@@ -31,6 +31,10 @@ async function run() {
     const touristsSpotCollection = client
       .db("CountriesDB")
       .collection("touristsSpot");
+
+    const clientReviewsCollection = client
+      .db("clientReviews")
+      .collection("reviews");
     //countries  post
     app.post("/country", async (req, res) => {
       const newCountry = req.body;
@@ -101,6 +105,21 @@ async function run() {
       );
       res.send(result);
     });
+
+    //client review add
+
+    app.post("/reviewadd", async (req, res) => {
+      const newSpot = req.body;
+      const result = await clientReviewsCollection.insertOne(newSpot);
+      res.send(result);
+    });
+
+    app.get("/reviewadd", async (req, res) => {
+      const cursor = clientReviewsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -111,7 +130,7 @@ async function run() {
     // await client.close();
   }
 }
-run().catch(console.dir);
+run().catch(console.log);
 
 app.listen(port, () => {
   console.log(`This port is running on ${port}`);
